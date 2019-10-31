@@ -77,6 +77,7 @@ function Home() {
                     </section>
                     
                     <DeliverForm onSubmit={transaction} method="post">
+                        Add Transaction
                         <FieldInput type="text" id='whom' placeholder='to who' value={transFormWho} onChange={e=>setTransFormWho(e.target.value)}/>
                         <FieldInput type="number" value={transFormAmt} onChange={e=>setTransFormamt(e.target.value)}/>
                         <button>

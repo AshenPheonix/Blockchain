@@ -23,6 +23,9 @@ export const Form=styled.fieldset`
         padding:.5rem;
         margin:auto;
     }
+    ${v.TABLET}{
+        width:75vw;
+    }
 `
 
 export const FieldInput=styled.input`
@@ -42,6 +45,9 @@ export const DeliverForm=styled.form`
         padding:.5rem;
         margin:auto;
     }
+    ${v.TABLET}{
+        width:75vw;
+    }
 `
 
 export const List=styled.ul`
@@ -57,9 +63,19 @@ export const List=styled.ul`
 export const TransSection=styled.section`
     ${v.FLEXBOX('column')}
     section{
+        overflow:auto;
+        max-height:200px;
         border:groove 2px gray;
         margin:1rem auto;
         min-width:95vw;
         padding:1rem;
+    }
+    ${v.TABLET}{
+        flex-direction:row;
+        section{
+            max-height:500px;
+            overflow:auto;
+            min-width:45vw;
+        }
     }
 `
