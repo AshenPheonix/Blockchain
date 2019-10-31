@@ -167,20 +167,20 @@ def last_block():
 def home():
     return "<h1>Welcome to blockchain!</h1>", 200
 
-# Run the program on port 5000
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
 @app.route('/transactions/new',methods=['POST'])
 def new_transaction():
-    data=request.json()
+    data=request.get_json()
 
-    req=['proof','reicipient','sender','id']
-
-    if not all (k in values for k in req):
+    req=['reicipient','sender','amount']
+    print(data)
+    if not all (k in data for k in req):
         return jsonify({
             'message':'Not all required fields given'
         }),200
     
     index = blockchain.new_transaction(data.get('sender'),data.get('reicipient'),data['amount'])
     return jsonify({'message':f'Transaction will be added to {index}'}),200
+
+# Run the program on port 5000
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
