@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from 'react'
 import con from '../helpers/connector'
 import List from './list'
+import {Wallet, Form,FieldInput,DeliverForm, TransSection} from '../styles/home'
 
 function Home() {
 
@@ -8,11 +9,12 @@ function Home() {
         [idForm,setIdForm]=useState(id),
         [error,setError]=useState(''),
         [ready,setReady]=useState(false),
-        [self,setSelf]=useState({in:[],out:[]}),
         [transFormWho,setTransFormWho]=useState(''),
         [transFormAmt,setTransFormamt]=useState(0),
         [message,setMessage]=useState('')
-
+        
+    const [connector,setConnector]=useState(con)
+    
     const changeId=e=>{
         if (idForm.length>0) {
             localStorage.setItem('id', idForm)
@@ -24,7 +26,6 @@ function Home() {
         }
     }
 
-    const [connector,setConnector]=useState(con)
 
     const startup=async e=>{
         await connector.getChain()
@@ -35,15 +36,11 @@ function Home() {
         startup()
     },[])
 
-    useEffect(e=>{
-
-    })
-
     const transaction=async e=>{
         e.preventDefault()
         await startup()
 
-        if (transFormWho == '' || transFormAmt < 1) {
+        if (transFormWho === '' || transFormAmt < 1) {
             return
         }else{
             const out = await connector.give(id,transFormWho,transFormAmt)
@@ -55,42 +52,44 @@ function Home() {
     }
 
     return (
-        <section>
+        <Wallet>
             <h1>
                 Welcome{(id === null)? '':` ${id}`}!
             </h1>
-            <fieldset>
-                <legend>Change id?</legend>
-                    <input type="text" value={idForm || ''} onChange={e=>{setIdForm(e.target.value)}} placeholder="New Id"/>
-                    <button onClick={changeId}>
-                        Change Id
-                    </button>
+            <Form>
+                <legend>Change Id?</legend>
+                <FieldInput type="text" value={idForm || ''} onChange={e=>{setIdForm(e.target.value)}} placeholder="New Id"/><br/>
+                <button onClick={changeId}>
+                    Change Id
+                </button>
                 {error.length>0 &&
                     <p>
                         {error}
                     </p>
                 }
-            </fieldset>
+            </Form>
             {ready &&
                 <>
                     <section>
-                        Current Balance: {id===undefined?'Sign In to View':connector.getTotal(id)}
+                        Current Balance:    <span class={id!==undefined && connector.getTotal(id)>-1 ? 'good':'bad'}>
+                                                {id===undefined?'Sign In to View':connector.getTotal(id)}
+                                            </span>
                     </section>
                     
-                    <form onSubmit={transaction} method="post">
-                        <input type="text" id='whom' placeholder='to who' value={transFormWho} onChange={e=>setTransFormWho(e.target.value)}/>
-                        <input type="number" value={transFormAmt} onChange={e=>setTransFormamt(e.target.value)}/>
+                    <DeliverForm onSubmit={transaction} method="post">
+                        <FieldInput type="text" id='whom' placeholder='to who' value={transFormWho} onChange={e=>setTransFormWho(e.target.value)}/>
+                        <FieldInput type="number" value={transFormAmt} onChange={e=>setTransFormamt(e.target.value)}/>
                         <button>
                             Give Coins
                         </button>
                         <p>
                             {message}
                         </p>
-                    </form>
+                    </DeliverForm>
 
                     { id &&
                         <>
-                            <section>
+                            <TransSection>
                                 <section>
                                     <h3>
                                         Transactions In
@@ -111,7 +110,7 @@ function Home() {
                                         dir={'out'}
                                     />
                                 </section>
-                            </section>
+                            </TransSection>
                         
                         </>
                     }
@@ -122,7 +121,7 @@ function Home() {
                     Loading
                 </p>
             }
-        </section>
+        </Wallet>
     )
 }
 

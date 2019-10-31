@@ -13,7 +13,7 @@ class OBSERVER{
     getChain=async e=>{
         const response = await this._base.get('/chain')
         const data = response.data
-        if (data.length==this._stored.count) {
+        if (data.length===this._stored.count) {
             return
         }else{
             this._stored.count=data.length
@@ -50,7 +50,7 @@ class OBSERVER{
 
     getRelevant=async id=>{
         await this.getChain()
-        if (this._stored.held[id]==undefined) {
+        if (this._stored.held[id]===undefined) {
             return []
         }
         return this._stored.held[id].transactions||[]
