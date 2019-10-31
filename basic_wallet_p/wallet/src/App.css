@@ -1,0 +1,13 @@
+body{
+  background-color: #f0f4f7;
+}
+
+*{
+  box-sizing: border-box;
+}
+span.good{
+  color:green;
+}
+span.bad{
+  color:red;
+}
