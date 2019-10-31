@@ -126,7 +126,6 @@ def mine():
     # Forge the new Block by adding it to the chain with the proof
     previous_hash = blockchain.hash(blockchain.last_block)
     if not blockchain.valid_proof(previous_hash, data['proof']):
-        print( f'Attempting {data} on {previous_hash}')
         return jsonify({
             'message':'Bad Proof or Already Mined'
         })

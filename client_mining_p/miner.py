@@ -1,11 +1,12 @@
 import hashlib
 import requests
+import time
 
 import sys
 import json
 
 
-def proof_of_work(block):
+def proof_of_work(block,start=0):
     """
     Simple Proof of Work Algorithm
     Stringify the block and look for a proof.
@@ -14,7 +15,7 @@ def proof_of_work(block):
     :return: A valid proof for the provided block
     """
     block_string = hashlib.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
-    proof = 0
+    proof = start
     print('Starting Mine')
     while not valid_proof(block_string, proof):
         proof += 1
@@ -45,6 +46,11 @@ if __name__ == '__main__':
     else:
         node = "http://localhost:5000"
 
+    if len(sys.argv) > 2:
+        count=int(sys.argv[2])
+    else:
+        count=0
+
     # Load ID
     f = open("my_id.txt", "r")
     id = f.read()
@@ -64,14 +70,18 @@ if __name__ == '__main__':
             print(r)
             break
 
+        start=time.time()
         # TODO: Get the block from `data` and use it to look for a new proof
-        new_proof = proof_of_work(data)
-
+        new_proof = proof_of_work(data,count)
+        
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_proof, "id": id}
-
+        
         r = requests.post(url=node + "/mine", json=post_data)
-        data = r.json()
+        try:
+            data = r.json()
+        except ValueError as err:
+            data={'message':r}
 
         # TODO: If the server responds with a 'message' 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
@@ -81,3 +91,5 @@ if __name__ == '__main__':
             print('Gotim! ',coins)
         else:
             print('Awww, ', data['message'])
+
+        print(f'Took {start-time.time()} seconds')
